@@ -1,5 +1,6 @@
 html, body {
   margin: 0;
+  height: 100%;
 }
 
 .absolute {
@@ -9,6 +10,16 @@ html, body {
 .flex {
   display: flex;
 }
+.block {
+  display: block;
+}
+.table {
+  display: table;
+}
+.table-cell {
+  display: table-cell;
+}
+
 
 nav {
   left: 0;
@@ -47,6 +58,46 @@ nav .nav-link {
 .built-by-us.mobile {
   display: none;
 }
+
+.escape {
+  cursor: pointer;
+}
+
+.cont-cont {
+  position: relative;
+}
+
+.cont-cont.music {
+  background-color: rgba(246,246,246,0.73);
+  width: 95%;
+  max-width: 800px;
+  margin: 1em auto;
+  height: 85%;
+}
+
+.cont-cont.music .table-cell {
+  vertical-align: middle;
+  text-align: center;
+  padding: 2em 0;
+}
+
+.cont-cont.music .escape {
+  top: 10px;
+  right: 10px;
+}
+
+#music_tape {
+  margin-bottom: 1em;
+}
+
+#music_controls .music-button g {
+  transition: transform 0.25s ease;
+}
+
+#music_controls .music-button.selected g {
+  transform: translate(0,10%);
+}
+
 
 @media screen and (max-width: 768px) {
   .built-by-us.desktop {
