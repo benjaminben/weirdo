@@ -11,3 +11,7 @@ var server = app.listen(app.get('port'), function(){
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/static/html/main.html');
 })
+
+app.get('/tumblr/key', function(req, res){
+  res.send('C26BDb6XSZlxebjxb6nrbMF0tPcSisnz50WHxvR2mzCMC0emz0');
+})

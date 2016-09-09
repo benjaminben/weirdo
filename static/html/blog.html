@@ -1,0 +1,31 @@
+<div id="blog_cont" class="cont-cont blog">
+  <script type='text/javascript'>
+    // postscribe('#blog_cont', '<script type="text/javascript" src=http://redfoxtheband.tumblr.com/js><\/script>');
+
+    $.ajax({
+      url: '/tumblr/key',
+      method: 'GET',
+      success: function(res){
+        var token = res;
+        $.ajax({
+          url: 'https://api.tumblr.com/v2/blog/notsocommonthingsincommon.tumblr.com/posts/text?api_key=' + token,
+          method: 'GET',
+          dataType: 'jsonp',
+          success: function(resp){
+            console.log(resp);
+            resp.response.posts.forEach(function(post, i){
+              var span = document.createElement('span');
+              span.classList += 'blog-post block'
+              $(span).append(post.body);
+              $('#blog_cont').append($(span))
+            })
+          }
+        })
+      }
+    })
+
+  </script>
+  <!-- <iframe src="http://www.redfoxredfox.com/">
+    <script type='text/javascript' src='http://redfoxtheband.tumblr.com/js'></script>
+  </iframe> -->
+</div>
