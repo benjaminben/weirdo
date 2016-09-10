@@ -1,11 +1,18 @@
 <div id="blog_cont" class="cont-cont blog">
   <script type='text/javascript'>
-    // postscribe('#blog_cont', '<script type="text/javascript" src=http://redfoxtheband.tumblr.com/js><\/script>');
+    $('main').addClass('blog');
+
+    $('.cont-cont.blog .escape').on('click', function(){
+      $('main').removeClass('blog');
+      $('.cont-cont.blog').remove();
+      window.history.pushState(null, null, '/');
+    });
 
     $.ajax({
-      url: '/tumblr/key',
+      url: '/keychain/tumblr',
       method: 'GET',
       success: function(res){
+        console.log(res);
         var token = res;
         $.ajax({
           url: 'https://api.tumblr.com/v2/blog/notsocommonthingsincommon.tumblr.com/posts/text?api_key=' + token,

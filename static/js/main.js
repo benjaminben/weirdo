@@ -2,6 +2,7 @@ $(document).ready(function(){
 
   function poofHTML(target){
     if( $('.cont-cont').length ){
+      if( $('main').hasClass('blog') ){$('main').removeClass('blog')}
       $('.cont-cont').remove();
     }
 
@@ -14,13 +15,21 @@ $(document).ready(function(){
         window.history.pushState(null, null, target);
       },
       error: function(err){
-        window.history.pushState(null, null, '/');
+        console.log(err)
       }
     })
   }
 
   if( window.location.pathname.length > 1 ){
-    poofHTML(window.location.pathname);
+    if( window.location.pathname.split('/').pop() === 'music' ||
+        window.location.pathname.split('/').pop() === 'blog' ||
+        window.location.pathname.split('/').pop() === 'contact' ){
+
+      poofHTML(window.location.pathname);
+    }
+    else {
+      window.history.replaceState(null, null, '/');
+    }
   }
 
   $('.nav-link').on('click', function(){
@@ -28,12 +37,14 @@ $(document).ready(function(){
   })
 
   $(window).on('popstate', function(e){
+    console.log('blaghhh')
     var target = window.location.pathname.split('/').pop();
-    if( !target ){
-      $('.cont-cont').remove()
-    }
-    else {
-      poofHTML('/' + target);  
-    }
+    // console.log(e.state)
+    // if( !target ){
+    //   $('.cont-cont').remove()
+    // }
+    // else {
+      poofHTML('/' + target);
+    // }
   })
 })

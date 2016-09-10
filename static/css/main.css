@@ -7,6 +7,11 @@ html, body {
 main {
   min-height: 100%;
   position: relative;
+  height: 100%;
+  font-family: 'Helvetica';
+}
+main.blog {
+  height: auto;
 }
 
 .absolute {
@@ -40,6 +45,7 @@ nav {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 nav .nav-link {
@@ -84,12 +90,13 @@ nav .nav-link {
   background-color: rgba(246,246,246,0.73);
   width: 95%;
   max-width: 800px;
-  top: 1em;
+  top: 2.5%;
   margin: auto;
-  height: 85%;
+  height: 95%;
+  z-index: 2;
 }
 
-.cont-cont.music .table-cell, .cont-cont.contact {
+.cont-cont.music .table-cell, .cont-cont.contact .table-cell {
   vertical-align: middle;
   text-align: center;
   padding: 2em 0;
@@ -100,6 +107,13 @@ nav .nav-link {
   right: 10px;
 }
 
+.cont-cont.music .spokes {
+  transform-origin: 50%;
+}
+.cont-cont.music.playing .spokes {
+  animation: spin360 2s linear;
+  animation-iteration-count: infinite;
+}
 #music_tape {
   margin-bottom: 1em;
 }
@@ -123,14 +137,7 @@ nav .nav-link {
 
 #blog_cont {
   padding-bottom: 150px;
-}
-
-.cont-cont.music .spokes {
-  transform-origin: 50%;
-}
-.cont-cont.music.playing .spokes {
-  animation: spin360 2s linear;
-  animation-iteration-count: infinite;
+  text-align: right;
 }
 
 

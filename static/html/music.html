@@ -81,7 +81,7 @@
       url: 'https://api.soundcloud.com/users/192920988/tracks.json?client_id=2e7675b793a76f6f7a25893799bd9b1c',
       method: 'GET',
       success: function(res){
-        console.log('suxas', res);
+        console.log(res);
         total_tracks = res.length;
         res.forEach(function(track, i){
           $.ajax({
