@@ -93,18 +93,29 @@
               audio.setAttribute('data-index', i)
               $('.cont-cont.music').append($(audio));
 
-              if( i === 0 ){ audio.classList += ' current' }
-
+              if( i === 0 ){ audio.className += ' current' }
+              // audio.play();
+              // audio.pause();
               audio.addEventListener('ended', function(){
-                // current_track = (current_track < res.length ? current_track++ : 0);
                 flipTrack(true);
               });
 
+              // audio.pause();
               if( i === 0 ){
                 flipTrack(true)
               }
+
               if( i === total_tracks - 1 ){
                 trackHandler();
+                // for( var ind = 0; ind <= total_tracks; ind++ ){
+                //   if( ind === total_tracks ){
+                //     for( var index = 0; index < total_tracks; index++ ){
+                //       document.querySelector('audio[data-index="'+index+'"]').pause();
+                //     }
+                //     flipTrack(true);
+                //   }
+                //   document.querySelector('audio[data-index="'+ind+'"]').play()
+                // }
               }
             },
             error: function(err){
@@ -130,7 +141,7 @@
             return
           }
           else {
-            playCurrent();
+            playCurrent(document.querySelector('audio.current'));
             button.addClass('selected');
           }
         }
@@ -153,32 +164,29 @@
       else if(current_track === total_tracks - 1){ $('#music_forward_button').addClass('disabled') }
       else if(current_track === 0){ $('#music_back_button').addClass('disabled') }
       else{ $('.music-button.disabled').removeClass('disabled') }
-      document.querySelector('audio[data-index="'+current_track+'"]').classList += ' current';
+
+      var trackToPlay = document.querySelector('audio[data-index="'+current_track+'"]');
+      trackToPlay.className += ' current';
 
       setTimeout(function(){
         $('.music-button.selected').removeClass('selected');
-        playCurrent();
+        playCurrent(trackToPlay);
       }, 1000)
-
-      // for( var i = 0; i < total_tracks; i++ ){
-      //   var track = $('audio[data-index='+i+']');
-      //   if( i !== current_track ){
-      //     document.querySelector('audio[data-index="'+i+'"]').pause();
-      //     if( track.hasClass('current') ){
-      //       track.removeClass('current');
-      //     }
-      //   }
-      //   else {
-      //     track.addClass('current');
-      //     $('#music_play_button').addClass('selected');
-      //     playCurrent();
-      //   }
-      // }
     }
-    function playCurrent(){
-      document.querySelector('audio.current').play();
-      $('#music_play_button').addClass('selected');
-      $('.cont-cont.music').addClass('playing');
+    function playCurrent(track){
+      // if( track.readyState > 3 ){
+        track.play();
+        $('#music_play_button').addClass('selected');
+        $('.cont-cont.music').addClass('playing');
+        return
+      // }
+      // console.log(track.readyState)
+      // track.addEventListener('canplay', function(){
+      //   console.log('farts')
+      //   track.play();
+      //   $('#music_play_button').addClass('selected');
+      //   $('.cont-cont.music').addClass('playing');
+      // })
     }
     function pauseCurrent(){
       document.querySelector('audio.current').pause();
