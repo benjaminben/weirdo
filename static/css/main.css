@@ -188,6 +188,10 @@ nav .nav-link {
   margin: 0 auto;
 }
 
+.contact-link {
+  cursor: pointer
+}
+
 #phone_cont #Group-4 .cls-12 {
   cursor: pointer;
 }
