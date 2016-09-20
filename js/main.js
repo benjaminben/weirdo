@@ -37,8 +37,8 @@ $(document).ready(function(){
       window.location.pathname.split('/').pop() !== 'blog' ||
       window.location.pathname.split('/').pop() !== 'contact'
     ) ){
-
-    window.location.replace('/');
+    console.log('flub')
+    // window.location.replace('/');
   }
 
   $('.nav-link').on('click', function(){
