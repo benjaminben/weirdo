@@ -7,7 +7,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-      url: 'html' + target + '.html',
+      url: 'html' + target + '_cont.html',
       method: 'GET',
       success: function(res){
         $('main').append(res);
@@ -20,16 +20,25 @@ $(document).ready(function(){
     })
   }
 
-  if( window.location.pathname.length > 1 ){
-    if( window.location.pathname.split('/').pop() === 'music' ||
-        window.location.pathname.split('/').pop() === 'blog' ||
-        window.location.pathname.split('/').pop() === 'contact' ){
+  // if( window.location.pathname.length > 1 ){
+  //   if( window.location.pathname.split('/').pop() === 'music' ||
+  //       window.location.pathname.split('/').pop() === 'blog' ||
+  //       window.location.pathname.split('/').pop() === 'contact' ){
 
-      poofHTML(window.location.pathname);
-    }
-    else {
-      window.history.replaceState(null, null, '/');
-    }
+  //     poofHTML(window.location.pathname);
+  //   }
+  //   else {
+  //     window.history.replaceState(null, null, '/');
+  //   }
+  // }
+
+  if( window.location.pathname.length > 1 && (
+      window.location.pathname.split('/').pop() !== 'music' ||
+      window.location.pathname.split('/').pop() !== 'blog' ||
+      window.location.pathname.split('/').pop() !== 'contact'
+    ) ){
+
+    window.location.replace('/');
   }
 
   $('.nav-link').on('click', function(){

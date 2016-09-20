@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>weirdo.</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
-    <script src="https://use.typekit.net/dtj0ctm.js"></script>
-    <script>try{Typekit.load({ async: true });}catch(e){}</script>
-    <link rel="stylesheet" href="css/main.css">
-    <script src="js/main.js"></script>
-  </head>
-  <body>
     <main>
       <img id="hands" class="absolute" src="assets/hands.jpg" />
       <div id="social_links" class="fixed flex">
@@ -54,6 +41,4 @@
 
       <span class="built-by-us desktop">BUILT BY .US</span>
     </nav>
-    </main>
-  </body>
-</html>
+
