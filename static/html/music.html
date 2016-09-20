@@ -110,6 +110,8 @@
                   if( ind === tracks.length ){
                     for( var index = 0; index <= tracks.length; index++ ){
                       if( index === tracks.length ){
+                        // if( tracks[0] )
+                        // console.log(tracks[0].readyState)
                         flipTrack(true);
                         // var atLast = $.Event('click');
                         // atLast.target = $('#music_play_button');
@@ -174,9 +176,11 @@
       });
     }
     function flipTrack(next){
-      pauseCurrent();
-      document.querySelector('audio.current').currentTime = 0;
-      $('audio.current').removeClass('current');
+      if( $('audio.current').length ){
+        pauseCurrent();
+        document.querySelector('audio.current').currentTime = 0;
+        $('audio.current').removeClass('current');
+      }
       current_track += (next ? 1 : -1);
       if(current_track === total_tracks || current_track < 0){ current_track = 0; }
       else if(current_track === total_tracks - 1){ $('#music_forward_button').addClass('disabled') }
@@ -187,19 +191,19 @@
       trackToPlay.className += ' current';
 
       $('#tape_title').text(trackToPlay.getAttribute('data-title'));
-
+      console.log(trackToPlay.readyState)
       setTimeout(function(){
-        $('.music-button.selected').removeClass('selected');
+        $('.music-button.selected:not(#music_share_button)').removeClass('selected');
         playCurrent(trackToPlay);
       }, 1000)
     }
     function playCurrent(track){
-      // if( track.readyState > 3 ){
+      // if( track.readyState > 0 ){
         track.play();
         $('#music_play_button').addClass('selected');
         $('.cont-cont.music').addClass('playing');
-        return
       // }
+      return
       // console.log(track.readyState)
       // track.addEventListener('canplay', function(){
       //   console.log('farts')

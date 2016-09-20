@@ -74,6 +74,7 @@ nav .nav-link {
   width: 100%;
   text-align: center;
   margin: -1em 0 1em 0;
+  font-family: 'orator';
 }
 
 .built-by-us.mobile {
@@ -124,7 +125,7 @@ nav .nav-link {
   overflow: hidden;
 }
 #tape_title {
-  font-family: 'orator-std';
+  font-family: 'orator';
 }
 
 #music_controls .music-button {
@@ -259,4 +260,9 @@ nav .nav-link {
   @keyframes handsY {
     from { top: 0; } to { top: calc(100% - 40px); }
   }
+}
+
+@font-face {
+  font-family: 'orator';
+  src: url(/assets/OratorStd.woff)
 }
