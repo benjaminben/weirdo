@@ -37,6 +37,9 @@ main.blog {
 .table-cell {
   display: table-cell;
 }
+.none {
+  display: none;
+}
 
 
 nav {
@@ -200,6 +203,28 @@ nav .nav-link {
   width: 80px;
   height: 80px;
   animation: handsX 3.05s linear 0s infinite alternate, handsY 3.4s linear 0s infinite alternate;
+}
+
+#audio_cont {
+  top: 0.66em;
+  right: 0.66em;
+  width: 40px;
+  height: 40px;
+}
+#audio_toggle {
+  cursor: pointer;
+}
+#audio_toggle path.playing {
+  display: inherit;
+}
+#audio_toggle path.mute {
+  display: none;
+}
+#audio_toggle.mute path.playing {
+  display: none;
+}
+#audio_toggle.mute path.mute {
+  display: inherit;
 }
 
 @keyframes spin360 {

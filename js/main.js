@@ -7,7 +7,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-      url: 'html' + target + '_cont.html',
+      url: 'html' + target + '_cont.php',
       method: 'GET',
       success: function(res){
         $('main').append(res);

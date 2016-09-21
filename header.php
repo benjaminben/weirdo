@@ -9,16 +9,3 @@
     <script src="js/main.js"></script>
   </head>
   <body>
-
-<?php
-
-  $config = parse_ini_file('keys-config.ini', true);
-
-?>
-
-<script>
-
-var val = '<?php echo $config[tumblr_key]?>'
-console.log(val);
-
-</script>

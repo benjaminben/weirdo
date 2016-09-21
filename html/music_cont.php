@@ -64,80 +64,124 @@
     </span>
   </div>
 
+  <?php
+    $config = parse_ini_file('../keys-config.ini', true);
+  ?>
 
   <script>
     document.getElementById('music_fb_link').setAttribute('href', 'http://www.facebook.com/sharer/sharer.php?u=' + window.location.href);
     document.getElementById('music_twitter_link').setAttribute('href', 'http://www.twitter.com/share?url=' + window.location.href);
 
-    var current_track = -1,
-        total_tracks;
+    var current_track = current_track || -1,
+        total_tracks = total_tracks || null,
+        audio_toggle = audio_toggle || $('#audio_toggle');
+        sc_key = '<?php echo $config[sc_key]?>';
 
     $('.cont-cont.music').on('click', '.escape', function(){
+      if( $('#audio_cont audio').length && $('#music_play_button').hasClass('selected') ){
+        audio_toggle.removeClass('none');
+        audio_toggle.on('click', function(){
+          var tracks = document.getElementsByTagName('audio');
+          if( audio_toggle.hasClass('mute') ){
+            audio_toggle.removeClass('mute');
+            for( var i = 0; i < tracks.length; i++ ){
+              tracks[i].volume = 1;
+            }
+          }
+          else {
+            audio_toggle.addClass('mute');
+            for( var i = 0; i < tracks.length; i++ ){
+              tracks[i].volume = 0;
+            }
+          }
+        });
+      }
+
       $('.cont-cont').remove();
       window.history.pushState(null, null, '/');
     });
 
-    $.ajax({
-      url: 'https://api.soundcloud.com/users/192920988/tracks.json?client_id=2e7675b793a76f6f7a25893799bd9b1c',
-      method: 'GET',
-      success: function(res){
-        console.log(res);
-        total_tracks = res.length;
-        res.forEach(function(track, i){
-          $.ajax({
-            url: track.stream_url + 's?client_id=2e7675b793a76f6f7a25893799bd9b1c',
-            method: 'GET',
-            success: function(res){
-              var audio = document.createElement('audio');
-              audio.src = res.http_mp3_128_url;
-              audio.className = 'sc-track';
-              audio.setAttribute('data-index', i);
-              audio.setAttribute('data-title', track.title)
-              $('.cont-cont.music').append($(audio));
+    audio_toggle.off('click');
 
-              if( i === 0 ){ audio.className += ' current' }
-              // audio.play();
-              // audio.pause();
-              audio.addEventListener('ended', function(){
-                flipTrack(true);
-              });
-
-              // audio.pause();
-              if( i === total_tracks - 1 ){
-                trackHandler();
-                var tracks = document.getElementsByClassName('sc-track');
-                for( var ind = 0; ind <= tracks.length; ind++ ){
-                  if( ind === tracks.length ){
-                    for( var index = 0; index <= tracks.length; index++ ){
-                      if( index === tracks.length ){
-                        // if( tracks[0] )
-                        // console.log(tracks[0].readyState)
-                        flipTrack(true);
-                        // var atLast = $.Event('click');
-                        // atLast.target = $('#music_play_button');
-                        // console.log(atLast)
-                        // $('#music_controls').trigger(atLast);
-                        // $('#music_play_button').trigger('click');
-                        break;
-                      }
-                      tracks[index].pause();
-                    }
-                    break;
-                  }
-                  tracks[ind].play()
-                }
-              }
-            },
-            error: function(err){
-              console.log(err);
-            }
-          })
-        });
-      },
-      error: function(err){
-        console.log('er', err)
+    if( !($('#audio_cont audio').length) ){
+      getTracks();
+    }
+    else {
+      console.log(current_track);
+      var tracks = document.getElementsByTagName('audio');
+      var current = document.querySelector('audio.current');
+      renderButtons();
+      trackHandler();
+      audio_toggle.addClass('none');
+      if( !audio_toggle.hasClass('mute') ){
+        $('.cont-cont.music').addClass('playing');
+        $('.cont-cont.music').addClass('playing');
+        $('#music_play_button').addClass('selected');
       }
-    })
+      else {
+        current.pause();
+        for( var i = 0; i < tracks.length; i++ ){
+          tracks[i].volume = 1;
+        }
+        audio_toggle.removeClass('mute');
+      }
+    }
+
+    function getTracks(){
+      $.ajax({
+        url: 'https://api.soundcloud.com/users/192920988/tracks.json?client_id=' + sc_key,
+        method: 'GET',
+        success: function(res){
+          console.log(res);
+          total_tracks = res.length;
+
+          res.forEach(function(track, i){
+            $.ajax({
+              url: track.stream_url + 's?client_id=' + sc_key,
+              method: 'GET',
+              success: function(res){
+                var audio = document.createElement('audio');
+                audio.src = res.http_mp3_128_url;
+                audio.className = 'sc-track';
+                audio.setAttribute('data-index', i);
+                audio.setAttribute('data-title', track.title)
+                $('#audio_cont').append($(audio));
+
+                if( i === 0 ){ audio.className += ' current' }
+
+                audio.addEventListener('ended', function(){
+                  flipTrack(true);
+                });
+
+                if( i === total_tracks - 1 ){
+                  trackHandler();
+                  var tracks = document.getElementsByClassName('sc-track');
+                  for( var ind = 0; ind <= tracks.length; ind++ ){
+                    if( ind === tracks.length ){
+                      for( var index = 0; index <= tracks.length; index++ ){
+                        if( index === tracks.length ){
+                          flipTrack(true);
+                          break;
+                        }
+                        tracks[index].pause();
+                      }
+                      break;
+                    }
+                    tracks[ind].play()
+                  }
+                }
+              },
+              error: function(err){
+                console.log(err);
+              }
+            })
+          });
+        },
+        error: function(err){
+          console.log('er', err)
+        }
+      })
+    }
 
     function trackHandler(){
       // $('#music_play_button').on('click', function(){
@@ -176,26 +220,28 @@
       });
     }
     function flipTrack(next){
-      if( $('audio.current').length ){
-        pauseCurrent();
-        document.querySelector('audio.current').currentTime = 0;
-        $('audio.current').removeClass('current');
-      }
+      pauseCurrent();
+      document.querySelector('audio.current').currentTime = 0;
+
       current_track += (next ? 1 : -1);
-      if(current_track === total_tracks || current_track < 0){ current_track = 0; }
-      else if(current_track === total_tracks - 1){ $('#music_forward_button').addClass('disabled') }
-      else if(current_track === 0){ $('#music_back_button').addClass('disabled') }
-      else{ $('.music-button.disabled').removeClass('disabled') }
+      renderButtons();
 
       var trackToPlay = document.querySelector('audio[data-index="'+current_track+'"]');
+      $('audio.current').removeClass('current');
       trackToPlay.className += ' current';
 
       $('#tape_title').text(trackToPlay.getAttribute('data-title'));
-      console.log(trackToPlay.readyState)
       setTimeout(function(){
         $('.music-button.selected:not(#music_share_button)').removeClass('selected');
         playCurrent(trackToPlay);
       }, 1000)
+    }
+    function renderButtons(){
+      console.log('blugh')
+      if(current_track === total_tracks || current_track < 0){ current_track = 0; }
+      else if(current_track === total_tracks - 1){ $('#music_forward_button').addClass('disabled') }
+      else if(current_track === 0){ $('#music_back_button').addClass('disabled') }
+      else{ console.log('plume'); $('.music-button.disabled').removeClass('disabled') }
     }
     function playCurrent(track){
       // if( track.readyState > 0 ){
