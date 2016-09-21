@@ -208,11 +208,16 @@ nav .nav-link {
 #audio_cont {
   top: 0.66em;
   right: 0.66em;
+  bottom: 0.66em;
   width: 40px;
-  height: 40px;
+  display: flex;
+  align-items: center;
+  z-index: 0;
 }
 #audio_toggle {
   cursor: pointer;
+  width: 40px;
+  height: 40px;
 }
 #audio_toggle path.playing {
   display: inherit;

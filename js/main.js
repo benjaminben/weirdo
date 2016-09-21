@@ -45,15 +45,15 @@ $(document).ready(function(){
     poofHTML($(this).data('link'));
   })
 
-  $(window).on('popstate', function(e){
-    console.log('blaghhh')
-    var target = window.location.pathname.split('/').pop();
-    // console.log(e.state)
-    // if( !target ){
-    //   $('.cont-cont').remove()
-    // }
-    // else {
-      poofHTML('/' + target);
-    // }
-  })
+  // $(window).on('popstate', function(e){
+  //   console.log('blaghhh')
+  //   var target = window.location.pathname.split('/').pop();
+  //   // console.log(e.state)
+  //   // if( !target ){
+  //   //   $('.cont-cont').remove()
+  //   // }
+  //   // else {
+  //     poofHTML('/' + target);
+  //   // }
+  // })
 })

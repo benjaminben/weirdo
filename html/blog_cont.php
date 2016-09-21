@@ -17,6 +17,10 @@
       </g>
   </svg>
 
+  <?php
+    $config = parse_ini_file('../keys-config.ini', true);
+  ?>
+
   <script type='text/javascript'>
     $('main').addClass('blog');
 
@@ -26,25 +30,20 @@
       window.history.pushState(null, null, '/');
     });
 
+    var token = '<?php echo $config[tumblr_key];?>'
+    console.log(token)
+
     $.ajax({
-      url: '/keychain/tumblr',
+      url: 'https://api.tumblr.com/v2/blog/notsocommonthingsincommon.tumblr.com/posts/text?api_key=' + token,
       method: 'GET',
-      success: function(res){
-        console.log(res);
-        var token = res;
-        $.ajax({
-          url: 'https://api.tumblr.com/v2/blog/notsocommonthingsincommon.tumblr.com/posts/text?api_key=' + token,
-          method: 'GET',
-          dataType: 'jsonp',
-          success: function(resp){
-            console.log(resp);
-            resp.response.posts.forEach(function(post, i){
-              var span = document.createElement('span');
-              span.classList += 'blog-post block'
-              $(span).append(post.body);
-              $('#blog_cont').append($(span))
-            })
-          }
+      dataType: 'jsonp',
+      success: function(resp){
+        console.log(resp);
+        resp.response.posts.forEach(function(post, i){
+          var span = document.createElement('span');
+          span.classList += 'blog-post block'
+          $(span).append(post.body);
+          $('#blog_cont').append($(span))
         })
       }
     })
