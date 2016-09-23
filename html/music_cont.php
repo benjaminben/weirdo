@@ -65,7 +65,8 @@
   </div>
 
   <?php
-    $config = parse_ini_file('../keys-config.ini', true);
+    $parent = realpath(__DIR__ . '/..');
+    $config = parse_ini_file($parent . '/keys-config.ini', true);
   ?>
 
   <script>
@@ -98,7 +99,7 @@
       }
 
       $('.cont-cont').remove();
-      window.history.pushState(null, null, '/');
+      window.history.pushState(null, null, '../');
     });
 
     audio_toggle.off('click');
@@ -107,7 +108,6 @@
       getTracks();
     }
     else {
-      console.log(current_track);
       var tracks = document.getElementsByTagName('audio');
       var current = document.querySelector('audio.current');
       renderButtons();
@@ -132,7 +132,6 @@
         url: 'https://api.soundcloud.com/users/192920988/tracks.json?client_id=' + sc_key,
         method: 'GET',
         success: function(res){
-          console.log(res);
           total_tracks = res.length;
 
           res.forEach(function(track, i){
@@ -237,7 +236,6 @@
       }, 1000)
     }
     function renderButtons(){
-      console.log('blugh')
       if(current_track === total_tracks || current_track < 0){ current_track = 0; }
       else if(current_track === total_tracks - 1){ $('#music_forward_button').addClass('disabled') }
       else if(current_track === 0){ $('#music_back_button').addClass('disabled') }

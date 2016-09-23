@@ -5,14 +5,14 @@ $(document).ready(function(){
       if( $('main').hasClass('blog') ){$('main').removeClass('blog')}
       $('.cont-cont').remove();
     }
-
+    console.log(target)
     $.ajax({
-      url: 'html' + target + '_cont.php',
+      url: '../html/' + target + '_cont.php',
       method: 'GET',
       success: function(res){
         $('main').append(res);
         var state = target.split('/').pop();
-        window.history.pushState(null, null, target);
+        window.history.pushState(null, null, '../' + target);
       },
       error: function(err){
         console.log(err)

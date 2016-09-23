@@ -19,7 +19,7 @@
   <script>
     $('.cont-cont.contact .escape').on('click', function(){
       $('.cont-cont').remove();
-      window.history.pushState(null, null, '/');
+      window.history.pushState(null, null, '../');
     })
 
     $('#contact_mgmt').on('click', function(){

@@ -1,2 +1,4 @@
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule !.*\.php$ %{REQUEST_FILENAME}.php [QSA,L]
+
+Header set Cache-Control "max-age=0, private, no-cache, no-store, must-revalidate"

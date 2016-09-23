@@ -18,7 +18,8 @@
   </svg>
 
   <?php
-    $config = parse_ini_file('../keys-config.ini', true);
+    $parent = realpath(__DIR__ . '/..');
+    $config = parse_ini_file($parent . '/keys-config.ini', true);
   ?>
 
   <script type='text/javascript'>
@@ -27,11 +28,10 @@
     $('.cont-cont.blog .escape').on('click', function(){
       $('main').removeClass('blog');
       $('.cont-cont.blog').remove();
-      window.history.pushState(null, null, '/');
+      window.history.pushState(null, null, '../');
     });
 
     var token = '<?php echo $config[tumblr_key];?>'
-    console.log(token)
 
     $.ajax({
       url: 'https://api.tumblr.com/v2/blog/notsocommonthingsincommon.tumblr.com/posts/text?api_key=' + token,

@@ -212,7 +212,7 @@ nav .nav-link {
   width: 40px;
   display: flex;
   align-items: center;
-  z-index: 0;
+  z-index: 1;
 }
 #audio_toggle {
   cursor: pointer;
@@ -298,5 +298,5 @@ nav .nav-link {
 
 @font-face {
   font-family: 'orator';
-  src: url(/assets/OratorStd.woff)
+  src: url(../assets/OratorStd.woff)
 }
