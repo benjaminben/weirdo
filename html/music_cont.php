@@ -172,22 +172,16 @@
     }).then(function(tracks){
       got_tracks = true;
       sc_tracks = tracks;
-      // for( var ind = 0; ind <= tracks.length; ind++ ){
-      //   if( ind === response.length ){
-      //     for( var index = 0; index <= tracks.length; index++ ){
-      //       if( index === tracks.length ){
-      //         flipTrack(true);
-      //         break;
-      //       }
-      //       tracks[index].pause();
-      //     }
-      //     break;
-      //   }
-      //   tracks[ind].play()
-      // }
       trackHandler();
-      console.log(document.querySelector('audio.current').readyState);
-      flipTrack(true);
+
+      if( !window.mobilecheck ){
+        flipTrack(true);
+      }
+      else {
+        $('#music_play_button').off('click').on('click', function(){
+          flipTrack(true);
+        })
+      }
     });
 
     function trackHandler(){
