@@ -74,23 +74,24 @@
     document.getElementById('music_twitter_link').setAttribute('href', 'http://www.twitter.com/share?url=' + window.location.href);
 
     var current_track = current_track || -1,
-        total_tracks = total_tracks || null,
-        audio_toggle = audio_toggle || $('#audio_toggle');
+        sc_tracks = sc_tracks || null,
+        audio_toggle = audio_toggle || document.getElementById('audio_toggle'),
+        got_tracks = got_tracks || false,
         sc_key = '<?php echo $config[sc_key]?>';
 
     $('.cont-cont.music').on('click', '.escape', function(){
-      if( $('#audio_cont audio').length && $('#music_play_button').hasClass('selected') ){
-        audio_toggle.removeClass('none');
-        audio_toggle.on('click', function(){
+      if( got_tracks && $('#music_play_button').hasClass('selected') ){
+        $(audio_toggle).removeClass('none');
+        $(audio_toggle).on('click', function(){
           var tracks = document.getElementsByTagName('audio');
-          if( audio_toggle.hasClass('mute') ){
-            audio_toggle.removeClass('mute');
+          if( $(audio_toggle).hasClass('mute') ){
+            $(audio_toggle).removeClass('mute');
             for( var i = 0; i < tracks.length; i++ ){
               tracks[i].volume = 1;
             }
           }
           else {
-            audio_toggle.addClass('mute');
+            $(audio_toggle).addClass('mute');
             for( var i = 0; i < tracks.length; i++ ){
               tracks[i].volume = 0;
             }
@@ -99,94 +100,97 @@
       }
 
       $('.cont-cont').remove();
-      window.history.pushState(null, null, '../');
+      window.history.pushState(null, null, site_root);
     });
 
-    audio_toggle.off('click');
+    $(audio_toggle).off('click');
 
     if( !($('#audio_cont audio').length) ){
-      getTracks();
+      // Promise.resolve(getTracks);
     }
     else {
       var tracks = document.getElementsByTagName('audio');
       var current = document.querySelector('audio.current');
       renderButtons();
       trackHandler();
-      audio_toggle.addClass('none');
-      if( !audio_toggle.hasClass('mute') ){
+      $(audio_toggle).addClass('none');
+      $('#tape_title').text(current.getAttribute('data-title'));
+      if( !$(audio_toggle).hasClass('mute') ){
         $('.cont-cont.music').addClass('playing');
         $('.cont-cont.music').addClass('playing');
         $('#music_play_button').addClass('selected');
       }
       else {
         current.pause();
-        for( var i = 0; i < tracks.length; i++ ){
-          tracks[i].volume = 1;
+        for( var i = 0; i < sc_tracks.length; i++ ){
+          sc_tracks[i].volume = 1;
         }
-        audio_toggle.removeClass('mute');
+        $(audio_toggle).removeClass('mute');
       }
     }
 
-    function getTracks(){
+    var getTracks = new Promise(function(resolve, reject){
+      if( got_tracks ){
+        return 'tracks (al)ready';
+      }
       $.ajax({
         url: 'https://api.soundcloud.com/users/192920988/tracks.json?client_id=' + sc_key,
         method: 'GET',
         success: function(res){
-          total_tracks = res.length;
-
-          res.forEach(function(track, i){
+          console.log('yay');
+          resolve(res);
+        },
+        error: function(err){
+          console.log('fish failed');
+        }
+      })
+    }).then(function(r){
+        var trackPromises = r.map(function(track, i){
+          var stream_p = new Promise(function(resolve, reject){
+            console.log('getting track...');
             $.ajax({
               url: track.stream_url + 's?client_id=' + sc_key,
               method: 'GET',
-              success: function(res){
+              success: function(response){
                 var audio = document.createElement('audio');
-                audio.src = res.http_mp3_128_url;
-                audio.className = 'sc-track';
+                audio.src = response.http_mp3_128_url;
+                audio.className = 'sc-track' + (i === 0 ? ' current' : '');
                 audio.setAttribute('data-index', i);
-                audio.setAttribute('data-title', track.title)
-                $('#audio_cont').append($(audio));
-
-                if( i === 0 ){ audio.className += ' current' }
-
+                audio.setAttribute('data-title', track.title);
+                audio.setAttribute('preload', 'preload');
                 audio.addEventListener('ended', function(){
                   flipTrack(true);
                 });
-
-                if( i === total_tracks - 1 ){
-                  trackHandler();
-                  var tracks = document.getElementsByClassName('sc-track');
-                  for( var ind = 0; ind <= tracks.length; ind++ ){
-                    if( ind === tracks.length ){
-                      for( var index = 0; index <= tracks.length; index++ ){
-                        if( index === tracks.length ){
-                          flipTrack(true);
-                          break;
-                        }
-                        tracks[index].pause();
-                      }
-                      break;
-                    }
-                    tracks[ind].play()
-                  }
-                }
-              },
-              error: function(err){
-                console.log(err);
+                $('#audio_cont').append($(audio));
+                resolve(audio);
               }
-            })
           });
-        },
-        error: function(err){
-          console.log('er', err)
-        }
-      })
-    }
+        });
+        return stream_p;
+      });
+      return(Promise.all(trackPromises));
+    }).then(function(tracks){
+      got_tracks = true;
+      sc_tracks = tracks;
+      // for( var ind = 0; ind <= tracks.length; ind++ ){
+      //   if( ind === response.length ){
+      //     for( var index = 0; index <= tracks.length; index++ ){
+      //       if( index === tracks.length ){
+      //         flipTrack(true);
+      //         break;
+      //       }
+      //       tracks[index].pause();
+      //     }
+      //     break;
+      //   }
+      //   tracks[ind].play()
+      // }
+      trackHandler();
+      console.log(document.querySelector('audio.current').readyState);
+      flipTrack(true);
+    });
 
     function trackHandler(){
-      // $('#music_play_button').on('click', function(){
-      //   playCurrent(document.querySelector('audio.current'));
-      //   $('#music_play_button').off('click');
-      // })
       $('#music_play_button').on('click', function(){
         if( $(this).hasClass('selected') ){
           pauseCurrent();
@@ -219,8 +223,9 @@
       });
     }
     function flipTrack(next){
+      var current = document.querySelector('audio.current');
       pauseCurrent();
-      document.querySelector('audio.current').currentTime = 0;
+      current.currentTime = 0;
 
       current_track += (next ? 1 : -1);
       renderButtons();
@@ -230,31 +235,29 @@
       trackToPlay.className += ' current';
 
       $('#tape_title').text(trackToPlay.getAttribute('data-title'));
+
       setTimeout(function(){
         $('.music-button.selected:not(#music_share_button)').removeClass('selected');
         playCurrent(trackToPlay);
       }, 1000)
     }
     function renderButtons(){
-      if(current_track === total_tracks || current_track < 0){ current_track = 0; }
-      else if(current_track === total_tracks - 1){ $('#music_forward_button').addClass('disabled') }
-      else if(current_track === 0){ $('#music_back_button').addClass('disabled') }
-      else{ console.log('plume'); $('.music-button.disabled').removeClass('disabled') }
+      if( current_track <= 0 ){
+        current_track = 0;
+        $('#music_back_button').addClass('disabled');
+      }
+      else if ( !(current_track < (sc_tracks.length - 1)) ){
+        $('#music_forward_button').addClass('disabled')
+      }
+      else {
+        $('.music-button.disabled').removeClass('disabled')
+      }
     }
     function playCurrent(track){
-      // if( track.readyState > 0 ){
-        track.play();
-        $('#music_play_button').addClass('selected');
-        $('.cont-cont.music').addClass('playing');
-      // }
+      track.play();
+      $('#music_play_button').addClass('selected');
+      $('.cont-cont.music').addClass('playing');
       return
-      // console.log(track.readyState)
-      // track.addEventListener('canplay', function(){
-      //   console.log('farts')
-      //   track.play();
-      //   $('#music_play_button').addClass('selected');
-      //   $('.cont-cont.music').addClass('playing');
-      // })
     }
     function pauseCurrent(){
       document.querySelector('audio.current').pause();

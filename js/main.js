@@ -1,3 +1,4 @@
+console.log(site_root)
 $(document).ready(function(){
 
   function poofHTML(target){
@@ -7,12 +8,12 @@ $(document).ready(function(){
     }
     console.log(target)
     $.ajax({
-      url: '../html/' + target + '_cont.php',
+      url: site_root + 'html/' + target + '_cont.php',
       method: 'GET',
       success: function(res){
         $('main').append(res);
         var state = target.split('/').pop();
-        window.history.pushState(null, null, '../' + target);
+        window.history.pushState(null, null, site_root + target);
       },
       error: function(err){
         console.log(err)
@@ -20,40 +21,14 @@ $(document).ready(function(){
     })
   }
 
-  // if( window.location.pathname.length > 1 ){
-  //   if( window.location.pathname.split('/').pop() === 'music' ||
-  //       window.location.pathname.split('/').pop() === 'blog' ||
-  //       window.location.pathname.split('/').pop() === 'contact' ){
-
-  //     poofHTML(window.location.pathname);
-  //   }
-  //   else {
-  //     window.history.replaceState(null, null, '/');
-  //   }
-  // }
-
-  if( window.location.pathname.length > 1 && (
-      window.location.pathname.split('/').pop() !== 'music' ||
-      window.location.pathname.split('/').pop() !== 'blog' ||
-      window.location.pathname.split('/').pop() !== 'contact'
-    ) ){
-    console.log('flub')
-    // window.location.replace('/');
-  }
-
   $('.nav-link').on('click', function(){
     poofHTML($(this).data('link'));
   })
 
-  // $(window).on('popstate', function(e){
-  //   console.log('blaghhh')
-  //   var target = window.location.pathname.split('/').pop();
-  //   // console.log(e.state)
-  //   // if( !target ){
-  //   //   $('.cont-cont').remove()
-  //   // }
-  //   // else {
-  //     poofHTML('/' + target);
-  //   // }
-  // })
+  $(window).on('popstate', function(e){
+    e.preventDefault();
+    var target = window.location.pathname.split('/').pop();
+    console.log(target)
+    poofHTML(target);
+  })
 })

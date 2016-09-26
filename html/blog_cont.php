@@ -28,7 +28,7 @@
     $('.cont-cont.blog .escape').on('click', function(){
       $('main').removeClass('blog');
       $('.cont-cont.blog').remove();
-      window.history.pushState(null, null, '../');
+      window.history.pushState(null, null, site_root);
     });
 
     var token = '<?php echo $config[tumblr_key];?>'
