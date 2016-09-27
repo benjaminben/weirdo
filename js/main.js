@@ -8,11 +8,11 @@ window.mobilecheck = (function() {
 
 $(document).ready(function(){
 
+  var everPushedSomething = false,
+      initialUrl = location.href;
+
   function poofHTML(target){
-    if( $('.cont-cont').length ){
-      if( $('main').hasClass('blog') ){$('main').removeClass('blog')}
-      $('.cont-cont').remove();
-    }
+    handleContCont();
     console.log(target)
     $.ajax({
       url: site_root + 'html/' + target + '_cont.php',
@@ -21,6 +21,7 @@ $(document).ready(function(){
         $('main').append(res);
         var state = target.split('/').pop();
         window.history.pushState(null, null, site_root + target);
+        everPushedSomething = 'yes';
       },
       error: function(err){
         console.log(err)
@@ -28,14 +29,30 @@ $(document).ready(function(){
     })
   }
 
+  function handleContCont(){
+    if( $('.cont-cont').length ){
+      if( $('main').hasClass('blog') ){$('main').removeClass('blog')}
+      $('.cont-cont').remove();
+    }
+  }
+
   $('.nav-link').on('click', function(){
     poofHTML($(this).data('link'));
   })
 
   $(window).on('popstate', function(e){
+    var onloadPop = !everPushedSomething && location.href == initialUrl;
+    everPushedSomething = true;
+    if (onloadPop) return;
+
     e.preventDefault();
     var target = window.location.pathname.split('/').pop();
-    console.log(target)
+    if( target.length < 2 ){
+      handleContCont();
+      window.history.pushState(null, null, site_root);
+      everPushedSomething = 'yes';
+      return;
+    }
     poofHTML(target);
   })
 })
